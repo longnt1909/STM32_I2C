@@ -87,7 +87,7 @@ void I2C1_Config(void) {
 }
 
 void BH1750_Init(void) {
-    uint8_t cmd = 0x10;  // Ch? d? do liên t?c, d? phân gi?i cao (1 lx = 1.2 raw data)
+    uint8_t cmd = 0x10;  
     I2C_Read(BH1750_ADDRESS, &cmd, 1);
 }
 
