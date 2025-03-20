@@ -5,7 +5,7 @@
 #include "stm32f10x_i2c.h"
 #include <stdio.h>
 
-#define BH1750_ADDRESS 0x23  // Ð?a ch? I2C c?a BH1750
+#define BH1750_ADDRESS 0x23  // Ã?a ch? I2C c?a BH1750
 
 void GPIO_Config(void);
 void USART1_Config(void);
@@ -28,7 +28,7 @@ int main(void) {
         char buffer[50];
         sprintf(buffer, "Light: %d Lux\r\n", lux);
         USART_SendString(buffer);
-        Delay_ms(1000);  // Ð?c d? li?u m?i 1 giây
+        Delay_ms(1000);  // Ã?c d? li?u m?i 1 giÃ¢y
     }
 }
 
@@ -37,7 +37,7 @@ void GPIO_Config(void) {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 }
 
-/* C?u hình UART1 (TX: PA9, RX: PA10) */
+/* C?u hÃ¬nh UART1 (TX: PA9, RX: PA10) */
 void USART1_Config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
     USART_InitTypeDef USART_InitStruct;
@@ -60,9 +60,7 @@ void USART1_Config(void) {
     USART_InitStruct.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
     USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_Init(USART1, &USART_InitStruct);
-    USART_Cmd(USART1, ENABLE);
 }
-
 
 void I2C1_Config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
@@ -86,12 +84,10 @@ void I2C1_Config(void) {
     I2C_Cmd(I2C1, ENABLE);
 }
 
-
 void BH1750_Init(void) {
     uint8_t cmd = 0x10;  
     I2C_Read(BH1750_ADDRESS, &cmd, 1);
 }
-
 
 uint16_t BH1750_ReadLight(void) {
     uint8_t data[2] = {0};
@@ -101,7 +97,6 @@ uint16_t BH1750_ReadLight(void) {
     lux = lux / 1.2;  
     return lux;
 }
-
 
 void I2C_Read(uint8_t address, uint8_t *data, uint8_t length) {
     while (I2C_GetFlagStatus(I2C1, I2C_FLAG_BUSY));
@@ -122,16 +117,12 @@ void I2C_Read(uint8_t address, uint8_t *data, uint8_t length) {
     while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_RECEIVED));
     data[length - 1] = I2C_ReceiveData(I2C1);
 }
-
-
 void USART_SendString(char *str) {
     while (*str) {
         while (!(USART1->SR & USART_SR_TXE));
         USART1->DR = *str++;
     }
 }
-
-
 void Delay_ms(uint32_t ms) {
     for (uint32_t i = 0; i < ms * 7200; i++);
 }
